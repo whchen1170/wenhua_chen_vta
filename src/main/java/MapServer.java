@@ -1,18 +1,17 @@
 import static spark.Spark.get;
 import static spark.Spark.staticFileLocation;
-import java.util.HashMap;
-import java.util.Map;
+
 import spark.QueryParamsMap;
 
 /**
  * This is the entry point for running the Maps inside of the JavaSpark web server,
  */
 public class MapServer {
-    private static Map<String, String> userLocationPair;
+
 
     public static void main(String[] args) {
-        userLocationPair = new HashMap<>();
-        staticFileLocation("/page");
+        FileStorageServiceInterface service = new FileStorageServiceImpl();
+        staticFileLocation("/public");
 
         get("/api/save", (req, res) -> {
             QueryParamsMap map = req.queryMap();
@@ -21,7 +20,8 @@ public class MapServer {
                 String place = map.get("place").value();
                 boolean validInput = false;
                 if (name!=null && !name.isEmpty() && place!=null && !place.isEmpty()) {
-                    userLocationPair.put(name, place);
+                    //to store name, place into a service.
+                    service.store(name, place);
                     validInput = true;
                 }
                 return Boolean.valueOf(validInput);
@@ -38,7 +38,8 @@ public class MapServer {
                 if ( user==null || user.isEmpty() ) {
                     throw new IllegalArgumentException("User not found.");
                 }
-                String location = userLocationPair.get(user);
+                //to get the user location by user name.
+                String location = service.getLocationByUserName(user);
                 if ( location==null || location.isEmpty() ) {
                     throw new IllegalArgumentException("location not found.");
                 }
