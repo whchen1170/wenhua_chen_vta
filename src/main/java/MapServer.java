@@ -1,6 +1,8 @@
 import static spark.Spark.get;
 import static spark.Spark.staticFileLocation;
 
+import java.io.IOException;
+
 import spark.QueryParamsMap;
 
 /**
@@ -9,7 +11,7 @@ import spark.QueryParamsMap;
 public class MapServer {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FileStorageServiceInterface service = new FileStorageServiceImpl();
         staticFileLocation("/public");
 
